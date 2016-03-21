@@ -11,27 +11,26 @@
     android:background="#edebeb">
 
     <EditText
+        android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Alias"
+        android:hint="@string/alias_message"
         android:ems="10"
-        android:id="@+id/editText"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:cursorVisible="true"
         android:layout_marginTop="65dp"
         android:contextClickable="true" />
 
     <EditText
+        android:id="@+id/editText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText2"
         android:layout_below="@+id/editText"
         android:layout_alignStart="@+id/editText"
         android:layout_marginTop="57dp"
         android:layout_alignEnd="@+id/editText"
-        android:text="Enter your trivia question"
+        android:hint="@string/question_message"
         android:cursorVisible="true"
         android:contextClickable="true" />
 
@@ -40,7 +39,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/editText3"
         android:layout_marginTop="57dp"
-        android:text="Enter the answer"
+        android:hint="@string/answer_message"
         android:layout_below="@+id/editText2"
         android:layout_alignStart="@+id/editText2"
         android:cursorVisible="true"

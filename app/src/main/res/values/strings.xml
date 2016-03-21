@@ -94,4 +94,7 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="alias_message">Enter alias name</string>
+    <string name="question_message">Enter your trivia question</string>
+    <string name="answer_message">Enter the answer</string>
 </resources>
