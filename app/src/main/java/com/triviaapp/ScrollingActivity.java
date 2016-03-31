@@ -38,6 +38,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 startActivity(message);
             }
         });
+
     }
 
     @Override
