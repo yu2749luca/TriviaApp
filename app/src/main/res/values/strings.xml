@@ -97,4 +97,8 @@
     <string name="alias_message">Enter alias name</string>
     <string name="question_message">Enter your trivia question</string>
     <string name="answer_message">Enter the answer</string>
+    <string name="title_activity_enter_message">EnterMessageActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
