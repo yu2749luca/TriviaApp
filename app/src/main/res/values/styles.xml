@@ -18,17 +18,18 @@
     </style>
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="windowActionBar">false</item>
         <item name="android:background">@color/black_overlay</item>
     </style>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:editTextBackground">@drawable/apptheme_edit_text_holo_light</item>
 
+        <item name="android:editTextBackground">@drawable/apptheme_edit_text_holo_light</item>
         <item name="android:textColorHighlight">#9933b5e5</item>
         <item name="android:textSelectHandleLeft">@drawable/apptheme_text_select_handle_left</item>
         <item name="android:textSelectHandleRight">@drawable/apptheme_text_select_handle_right</item>

@@ -1,19 +1,23 @@
 package com.triviaapp;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
-public class EnterMessageActivity extends Activity {
+public class EnterMessageActivity extends AppCompatActivity {
 
     private String alias;
     private String question;
@@ -29,38 +33,54 @@ public class EnterMessageActivity extends Activity {
     private EditText questionInput;
     private EditText answerInput;
 
-    String a = "<b>Alias</b> - Enter a unique identifier for your message. This will be used to search for it.<br/><br/>";
-    String b = "<b>Trivia Question</b> - Enter a trivia question less 100 characters.<br/><br/>";
+    String a = "<b>Alias</b> - Enter an alias less than 20 characters. This will be used to search and identify your message.<br/><br/>";
+    String b = "<b>Trivia Question</b> - Enter a trivia question less 150 characters.<br/><br/>";
     String c = "<b>Trivia Answer</b> - Enter the answer for the trivia question. Answers are automatically lowercase.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_message);
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        showEditDialog(false);
-        Button send = (Button) findViewById(R.id.send);
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText m = (EditText) findViewById(R.id.message);
-                message = m.getText().toString();
-                if(message.isEmpty())
-                {
-                    Toast.makeText(EnterMessageActivity.this, "Message cannot be blank!", Toast.LENGTH_LONG).show();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle("Create Message");
+            toolbar.setTitleTextColor(Color.WHITE);
+        }
+        setSupportActionBar(toolbar);
+        showEditDialog();
+        Button send = (Button) findViewById(R.id.send_button);
+        if (send != null) {
+            send.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText m = (EditText) findViewById(R.id.message);
+                    message = m != null ? m.getText().toString() : "";
+                    if(message.isEmpty())
+                    {
+                        if (m != null) {
+                            m.setError("Message cannot be blank!");
+                        }
+                        Snackbar snack = Snackbar.make(v, "Message cannot be blank!", Snackbar.LENGTH_SHORT)
+                                .setActionTextColor(Color.WHITE);
+                        View snackView = snack.getView();
+                        snackView.setBackgroundColor(Color.parseColor("#00CCFF"));
+                        TextView  text = (TextView)snackView.findViewById(android.support.design.R.id.snackbar_text);
+                        text.setTextColor(Color.WHITE);
+                        text.setGravity(Gravity.CENTER_HORIZONTAL);
+                        snack.show();
+//                        Toast.makeText(EnterMessageActivity.this, "Message cannot be blank!", Toast.LENGTH_LONG).show();
+                    }
                 }
-                else {
-                }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onBackPressed() {
-        showEditDialog(true);
+        showEditDialog();
     }
 
-    private void showEditDialog(boolean edit) {
+    private void showEditDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, R.style.CreateDialogTheme);
         LayoutInflater inflater = this.getLayoutInflater();
         dialogView = inflater.inflate(R.layout.create_dialog, null);
@@ -74,29 +94,25 @@ public class EnterMessageActivity extends Activity {
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
             }
-        });
-
-        dialogBuilder.setPositiveButton("Next", new DialogInterface.OnClickListener() {
+        }).setPositiveButton("Next", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
             }
-        });
-
-        dialogBuilder.setOnKeyListener(new Dialog.OnKeyListener() {
+        }).setOnKeyListener(new Dialog.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
                     finish();
                     arg0.dismiss();
+                } else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    return false;
                 }
-                return true;
+                return false;
             }
         });
 
-        if(edit) {
-            aliasInput.setText(alias);
-            questionInput.setText(question);
-            answerInput.setText(answer);
-        }
+        aliasInput.setText(alias);
+        questionInput.setText(question);
+        answerInput.setText(answer);
 
         final AlertDialog alertDialog = dialogBuilder.create();
         alertDialog.setCanceledOnTouchOutside(false);
@@ -119,11 +135,11 @@ public class EnterMessageActivity extends Activity {
                             if (question.isEmpty()) {
                                 questionInput.setError(error);
                             }
-                            if(answer.isEmpty())
-                            {
+                            if (answer.isEmpty()) {
                                 answerInput.setError(error);
                             }
-                        } else {
+                        }
+                        else {
                             dialog.dismiss();
                         }
                     }

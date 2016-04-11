@@ -1,47 +1,67 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="false">
 
-    <EditText
-        android:id="@+id/alias"
-        android:inputType="textCapSentences|text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:textCursorDrawable="@null"
-        android:hint="Alias"
-        android:layout_gravity="top"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:scrollbars="vertical"
+                  android:scrollbarAlwaysDrawVerticalTrack="true"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:weightSum="1">
 
-    <EditText
-        android:inputType="textCapSentences|text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/question"
-        android:hint="Trivia Question"
-        android:maxLines="5"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:textCursorDrawable="@null"
-        android:maxLength="100"/>
+        <EditText
+            android:id="@+id/alias"
+            android:background="@drawable/rounded_corners"
+            android:inputType="textCapSentences|text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="4dp"
+            android:textCursorDrawable="@null"
+            android:hint="Alias"
+            android:imeOptions="actionNext"
+            android:layout_gravity="top"/>
 
-    <EditText
-        android:inputType="textCapSentences|text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/answer"
-        android:hint="Trivia Answer"
-        android:maxLines="1"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:textCursorDrawable="@null"
-        android:maxLength="50"/>
+        <EditText
+            android:inputType="textCapSentences|textMultiLine"
+            android:background="@drawable/rounded_corners"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/question"
+            android:hint="Trivia Question"
+            android:padding="10dip"
+            android:gravity="left|top"
+            android:scrollbars = "vertical"
+            android:lines="3"
+            android:maxLines="3"
+            android:singleLine="false"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="4dp"
+            android:textCursorDrawable="@null"
+            android:maxLength="150"/>
 
-</LinearLayout>
+        <EditText
+            android:inputType="textCapSentences|text"
+            android:background="@drawable/rounded_corners"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/answer"
+            android:hint="Trivia Answer"
+            android:maxLines="1"
+            android:padding="10dp"
+            android:textCursorDrawable="@null"
+            android:maxLength="50"
+            android:layout_weight="3.73"
+            android:imeOptions="actionDone"
+            android:layout_margin="16dp"/>
+
+    </LinearLayout>
+</ScrollView>
