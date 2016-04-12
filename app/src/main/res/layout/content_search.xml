@@ -1,0 +1,67 @@
+<ScrollView
+    android:id="@+id/scroll_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="false">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:scrollbars="vertical"
+                  android:scrollbarAlwaysDrawVerticalTrack="true"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:weightSum="1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Trivia Question"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/search_question"
+            android:background="@drawable/rounded_corners"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginBottom="0dp"
+            android:textCursorDrawable="@null"
+            android:layout_gravity="top"
+            android:layout_marginTop="8dp"
+            android:maxLength="150"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_style"
+            android:textColor="@color/colorAccent"
+            android:text="Answer"
+            android:id="@+id/answer_submit"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Message"
+            android:id="@+id/textView4"
+            android:layout_marginTop="30dp"
+            android:textAlignment="center"/>
+
+        <EditText
+            android:inputType="textMultiLine"
+            android:background="@drawable/rounded_corners"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/answer"
+            android:lines="5"
+            android:maxLines="5"
+            android:padding="10dp"
+            android:textCursorDrawable="@null"
+            android:maxLength="150"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+</ScrollView>
