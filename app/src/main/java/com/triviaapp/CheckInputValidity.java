@@ -1,9 +1,16 @@
 package com.triviaapp;
 
 /**
+<<<<<<< Updated upstream
  * Created by Di on 4/11/16.
  */
 public class CheckInputValidity {
+=======
+ * Created by yu2749luca on 4/11/16.
+ */
+public class CheckInputValidity {
+
+>>>>>>> Stashed changes
     int asiccCeiling=126;
     int asiccRange=95;
     int asiccFloor=32;
@@ -165,5 +172,8 @@ public class CheckInputValidity {
     }
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 }

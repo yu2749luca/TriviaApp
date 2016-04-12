@@ -151,5 +151,16 @@ public class Encryption {
         //System.out.print(" "+asiccCode+" ");
         return returnC;
     }
+<<<<<<< HEAD
+=======
+
+
+
+
+<<<<<<< Updated upstream
+>>>>>>> c60b18105c457b9944cb5cd01b4cdc7fbfe08f61
 }
 
+=======
+}
+>>>>>>> Stashed changes

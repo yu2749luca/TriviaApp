@@ -127,6 +127,7 @@ public class EnterMessageActivity extends AppCompatActivity {
                         };
                         requestQueue.add(request);
                     }
+
                 }
             });
         }
