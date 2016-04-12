@@ -49,6 +49,11 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
 
+        setSupportActionBar(toolbar);
+        SearchView search = (SearchView) findViewById(R.id.searchView);
+
+        String dataFromMessageList = getIntent().getStringExtra("alias");
+
         if (toolbar != null) {
             toolbar.setTitle("Message Search");
             toolbar.setTitleTextColor(Color.WHITE);
@@ -59,8 +64,10 @@ public class SearchActivity extends AppCompatActivity {
         qView = (TextView)findViewById(R.id.search_question);
         mView = (TextView)findViewById(R.id.show_message);
 
-        setSupportActionBar(toolbar);
-        SearchView search = (SearchView) findViewById(R.id.searchView);
+        if(dataFromMessageList != null){
+            search.setQuery(dataFromMessageList, false);
+        }
+
         if (search != null) {
             search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -161,8 +168,7 @@ public class SearchActivity extends AppCompatActivity {
                         text.setTextColor(Color.WHITE);
                         text.setGravity(Gravity.CENTER_HORIZONTAL);
                         snack.show();
-                    }
-                    else {
+                    } else {
                         showDialog();
                     }
                 }

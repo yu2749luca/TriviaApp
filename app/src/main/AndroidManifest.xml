@@ -22,7 +22,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".SearchActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".MainActivity" android:screenOrientation="portrait"/>
         <activity android:name=".EnterMessageActivity" android:screenOrientation="portrait"/>
     </application>
 
