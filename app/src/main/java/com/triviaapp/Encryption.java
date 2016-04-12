@@ -27,8 +27,48 @@ public class Encryption {
         tail(password);
     }
 
+    public String encode (String message){
+
+        String [] seperate=message.split("\n");
+        String result="";
+        for (int i=0;i<seperate.length;i++){
+            String read=seperate[i];
+            if(!read.isEmpty()){
+            String encrypt=encrypt(read);
+            result=result+"\n"+encrypt;}
+        }
+
+
+
+        return result;
+
+    }
+
+    public String decode (String message){
+
+        String [] seperate=message.split("\n");
+        String result="";
+        for (int i=0;i<seperate.length;i++){
+            String read=seperate[i];
+            if(!read.isEmpty()){
+            String decrypt=decrypt(read);
+            result=result+"\n"+decrypt;}
+
+
+        }
+
+
+
+        return result;
+
+
+
+    }
+
+
+
     public String encrypt(String message) {
-        assert message.length() > 0 : "error, message not exist";
+        //assert message.length() > 0 : "error, message not exist";
 
         String encryptM = "";
         int count = 0;
@@ -47,6 +87,7 @@ public class Encryption {
             count++;
 
         }
+
         //System.out.println();
         return encryptM + tail;
     }
