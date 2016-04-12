@@ -6,13 +6,10 @@ package com.triviaapp;
 
 public class Encryption {
 
-
     int asiccCeiling=126;
     int asiccRange=95;
     int asiccFloor=32;
     int [] pattern;
-
-
 
     int passLength;
     int special1;
@@ -25,15 +22,10 @@ public class Encryption {
     String tail="";
 
     public Encryption (String password){
-
         insertPassword(password);
         arrangePattern(password);
         tail(password);
-
-
     }
-
-
 
     public String encrypt (String message){
         assert message.length()>0:"error, message not exist";
@@ -59,7 +51,6 @@ public class Encryption {
         return encryptM+tail;
     }
 
-
     public String decrypt(String message){
         String decryptM="";
         int count=0;
@@ -79,14 +70,11 @@ public class Encryption {
             count++;
 
         }
-
         //System.out.println();
         return decryptM;
-
     }
 
     private void tail (String password){
-
 
         for (int i=0;i<special4;i++){
             double drandom= Math.random()*30;
@@ -94,8 +82,6 @@ public class Encryption {
             char addC=changeC('a',intRan);
             tail=tail+addC;
         }
-
-
     }
 
     //each position in the array determines how much a character is shifted
@@ -124,15 +110,12 @@ public class Encryption {
         int passwordValue=passwordValue(password);
 
         for (int i=0;i<pattern.length;i++){
-
             int wordValue=(int) password.charAt(i)+passwordValue;
             int remain=wordValue%blocks.length;
             pattern [i]=remain;
         }
         //pattern=new int [] {1,2,4,5,3};
         //System.out.println("pattern :"+pattern [2]);
-
-
     }
     private int passwordValue (String password){
         int value=0;
@@ -155,7 +138,6 @@ public class Encryption {
         char changeC=(char) asiccCode;
         //System.out.print(" "+asiccCode+" ");
         return changeC;
-
     }
 
     private char returnC(char messageC, int shifted){
@@ -169,9 +151,5 @@ public class Encryption {
         //System.out.print(" "+asiccCode+" ");
         return returnC;
     }
-
-
-
-
 }
 

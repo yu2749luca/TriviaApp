@@ -16,6 +16,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EnterMessageActivity extends AppCompatActivity {
 
@@ -23,9 +35,12 @@ public class EnterMessageActivity extends AppCompatActivity {
     private String question;
     private String answer;
 
-    String error1="Can't Left Blank, No Foreign Characters";
-    String error2="Input must be greater than 2 characters and no sequel injection";
-    String error3="Answer must be more than 2 characters";
+    String insertURL = "http://donherwig.com/insertMessage.php";
+    RequestQueue requestQueue;
+
+    String error1="Can't leave blank. No foreign characters allowed";
+    String error2="Input must be longer than two characters or no sequel injection allowed";
+    String error3="Answer must be longer than two characters";
 
     private String message;
 
@@ -44,12 +59,17 @@ public class EnterMessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_message);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+
         if (toolbar != null) {
             toolbar.setTitle("Create Message");
             toolbar.setTitleTextColor(Color.WHITE);
         }
+
         setSupportActionBar(toolbar);
         showEditDialog();
+
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+
         Button send = (Button) findViewById(R.id.send_button);
         if (send != null) {
             send.setOnClickListener(new View.OnClickListener() {
@@ -59,7 +79,7 @@ public class EnterMessageActivity extends AppCompatActivity {
                     message = m != null ? m.getText().toString() : "";
                     CheckInputValidity checkM=new CheckInputValidity();
                     boolean checkMessage=checkM.checkAsicc(message);
-                    if(message.isEmpty()||checkMessage)
+                    if(message.isEmpty()||!checkMessage)
                     {
 
                         if (m != null) {
@@ -73,7 +93,39 @@ public class EnterMessageActivity extends AppCompatActivity {
                         text.setTextColor(Color.WHITE);
                         text.setGravity(Gravity.CENTER_HORIZONTAL);
                         snack.show();
-//                        Toast.makeText(EnterMessageActivity.this, "Message cannot be blank!", Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        final Encryption userMessage = new Encryption(answer);
+                        StringRequest request = new StringRequest(Request.Method.POST, insertURL, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                //listen for response from server and let user know if alias is already used
+                                if (!response.isEmpty()) {
+                                    Toast.makeText(EnterMessageActivity.this, response, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(EnterMessageActivity.this, "Message Sent!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            //this returns error if there is runtime error on server
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(EnterMessageActivity.this, "server error", Toast.LENGTH_SHORT).show();
+                            }
+                        }) {
+                            //These are the values sent to the server
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> parameters = new HashMap<>();
+                                parameters.put("alias", alias);
+                                parameters.put("message", userMessage.encrypt(message));
+                                parameters.put("question", question);
+
+                                return parameters;
+                            }
+                        };
+                        requestQueue.add(request);
                     }
                 }
             });

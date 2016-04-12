@@ -16,20 +16,49 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearchActivity extends AppCompatActivity {
 
-    boolean open = false;
+    String getMessage = "http://donherwig.com/readMessage.php";
+    String encryptedMessage = "";
+    String actualMessage;
+    RequestQueue requestQueue;
+
+    TextView qView;
+    TextView mView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+
         if (toolbar != null) {
             toolbar.setTitle("Message Search");
             toolbar.setTitleTextColor(Color.WHITE);
         }
+
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+
+        qView = (TextView)findViewById(R.id.search_question);
+        mView = (TextView)findViewById(R.id.show_message);
+
         setSupportActionBar(toolbar);
         SearchView search = (SearchView) findViewById(R.id.searchView);
         if (search != null) {
@@ -48,22 +77,66 @@ public class SearchActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             dialog.dismiss();
-                            if(query.isEmpty())
-                            {
+                            if (query.isEmpty()) {
                                 Snackbar snack = Snackbar.make(findViewById(R.id.searchView), "Search cannot be blank!", Snackbar.LENGTH_SHORT)
                                         .setActionTextColor(Color.WHITE);
                                 View snackView = snack.getView();
                                 snackView.setBackgroundColor(Color.parseColor("#00CCFF"));
-                                TextView text = (TextView)snackView.findViewById(android.support.design.R.id.snackbar_text);
+                                TextView text = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
                                 text.setTextColor(Color.WHITE);
                                 text.setGravity(Gravity.CENTER_HORIZONTAL);
                                 snack.show();
-                            }
-                            else {
+                            } else {
+                                StringRequest request = new StringRequest(Request.Method.POST, getMessage, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        //server will return "Alias doesn't exist if the alias isn't in database
+                                        if (!response.equals("Alias doesn't exist!")) {
+                                            JSONObject answer;
+                                            //create a JsonObject from returned JSON string from server
+                                            try {
+                                                answer = new JSONObject(response);
+                                                JSONArray temp = answer.getJSONArray("serverData");
+                                                JSONObject tempMessage = temp.getJSONObject(0);
+                                                encryptedMessage = tempMessage.getString("message");
+                                                JSONObject question = temp.getJSONObject(0);
+                                                String questionString = question.getString("question");
 
+                                                if (qView != null) {
+                                                    qView.setText(questionString);
+                                                }
+
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        } else {
+                                            final AlertDialog d = new AlertDialog.Builder(SearchActivity.this)
+                                                    .setTitle("Invalid Alias")
+                                                    .setMessage("Alias does not exist")
+                                                    .setPositiveButton("OK", null)
+                                                    .create();
+                                            d.show();
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }) {
+                                    //alias gets sent to server for database query
+                                    @Override
+                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                        Map<String, String> parameters = new HashMap<>();
+                                        parameters.put("alias", query);
+                                        return parameters;
+                                    }
+                                };
+                                requestQueue.add(request);
                             }
                         }
-                    }, 3000);
+                    }, 1000);
                     return false;
                 }
 
@@ -73,15 +146,30 @@ public class SearchActivity extends AppCompatActivity {
                 }
             });
         }
+
         Button answer = (Button) findViewById(R.id.answer_submit);
         if (answer != null) {
             answer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showDialog();
+                    if (encryptedMessage.isEmpty()) {
+                        Snackbar snack = Snackbar.make(findViewById(R.id.searchView), "Nothing to decrypt!", Snackbar.LENGTH_SHORT)
+                                .setActionTextColor(Color.WHITE);
+                        View snackView = snack.getView();
+                        snackView.setBackgroundColor(Color.parseColor("#00CCFF"));
+                        TextView text = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
+                        text.setTextColor(Color.WHITE);
+                        text.setGravity(Gravity.CENTER_HORIZONTAL);
+                        snack.show();
+                    }
+                    else {
+                        showDialog();
+                    }
                 }
             });
         }
+
+
     }
 
     private void showDialog() {
@@ -106,7 +194,8 @@ public class SearchActivity extends AppCompatActivity {
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (!input.getText().toString().isEmpty()) {
+                        final String ans = input.getText().toString();
+                        if (!ans.isEmpty()) {
                             dialog.dismiss();
                             final ProgressDialog progress = new ProgressDialog(SearchActivity.this);
                             progress.setTitle("Please Wait");
@@ -122,22 +211,29 @@ public class SearchActivity extends AppCompatActivity {
                                     progress.dismiss();
                                     View search = findViewById(R.id.searchView);
                                     if (search != null) {
-                                        Snackbar snack = Snackbar.make(search, "Successfully decrypted!", Snackbar.LENGTH_SHORT)
-                                                .setActionTextColor(Color.WHITE);
-                                        View snackView = snack.getView();
-                                        snackView.setBackgroundColor(Color.parseColor("#00CCFF"));
-                                        TextView text = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
-                                        text.setTextColor(Color.WHITE);
-                                        text.setGravity(Gravity.CENTER_HORIZONTAL);
-                                        snack.show();
+//                                        Snackbar snack = Snackbar.make(search, "Successfully decrypted!", Snackbar.LENGTH_SHORT)
+//                                                .setActionTextColor(Color.WHITE);
+//                                        View snackView = snack.getView();
+//                                        snackView.setBackgroundColor(Color.parseColor("#00CCFF"));
+//                                        TextView text = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
+//                                        text.setTextColor(Color.WHITE);
+//                                        text.setGravity(Gravity.CENTER_HORIZONTAL);
+//                                        snack.show();
+                                        if (ans.length() > 1 && !encryptedMessage.isEmpty()) {
+                                            Encryption mes = new Encryption(ans);
+                                            mView.setText(mes.decrypt(encryptedMessage));
+                                        } else {
+                                            Toast.makeText(SearchActivity.this, "Answer must be at least 2 characters!", Toast.LENGTH_LONG).show();
+                                        }
                                     }
                                 }
-                            }, 3000);
+                            }, 1000);
                         } else {
                             input.setError("Answer cannot be blank!");
                         }
                     }
                 });
+
                 Button n = d.getButton(AlertDialog.BUTTON_NEGATIVE);
                 n.setOnClickListener(new View.OnClickListener() {
                     @Override
