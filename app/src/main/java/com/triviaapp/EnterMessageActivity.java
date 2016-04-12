@@ -23,7 +23,9 @@ public class EnterMessageActivity extends AppCompatActivity {
     private String question;
     private String answer;
 
-    String error = "Field cannot be left blank";
+    String error1="Can't Left Blank, No Foreign Characters";
+    String error2="Input must be greater than 2 characters and no sequel injection";
+    String error3="Answer must be more than 2 characters";
 
     private String message;
 
@@ -55,10 +57,13 @@ public class EnterMessageActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     EditText m = (EditText) findViewById(R.id.message);
                     message = m != null ? m.getText().toString() : "";
-                    if(message.isEmpty())
+                    CheckInputValidity checkM=new CheckInputValidity();
+                    boolean checkMessage=checkM.checkAsicc(message);
+                    if(message.isEmpty()||checkMessage)
                     {
+
                         if (m != null) {
-                            m.setError("Message cannot be blank!");
+                            m.setError(error1);
                         }
                         Snackbar snack = Snackbar.make(v, "Message cannot be blank!", Snackbar.LENGTH_SHORT)
                                 .setActionTextColor(Color.WHITE);
@@ -127,16 +132,21 @@ public class EnterMessageActivity extends AppCompatActivity {
                         alias = aliasInput.getText().toString();
                         question = questionInput.getText().toString();
                         answer = answerInput.getText().toString();
-
-                        if (alias.isEmpty() || question.isEmpty() || answer.isEmpty()) {
-                            if (alias.isEmpty()) {
-                                aliasInput.setError(error);
+                        CheckInputValidity checkA=new CheckInputValidity();
+                        boolean checkAlias=checkA.overallCheck(alias);
+                        CheckInputValidity checkQ=new CheckInputValidity();
+                        boolean checkQuestion=checkQ.overallCheck(question);
+                        CheckInputValidity checkR=new CheckInputValidity();
+                        boolean checkAnswer=checkR.checkPassword(answer);
+                        if (!checkAlias || !checkQuestion || !checkAnswer) {
+                            if (!checkAlias) {
+                                aliasInput.setError(error2);
                             }
-                            if (question.isEmpty()) {
-                                questionInput.setError(error);
+                            if (!checkQuestion) {
+                                questionInput.setError(error2);
                             }
-                            if (answer.isEmpty()) {
-                                answerInput.setError(error);
+                            if (!checkAnswer) {
+                                answerInput.setError(error3);
                             }
                         }
                         else {
@@ -159,3 +169,4 @@ public class EnterMessageActivity extends AppCompatActivity {
     }
 
 }
+
