@@ -22,6 +22,7 @@ public class Encryption {
     String tail = "";
 
     public Encryption(String password) {
+        password=password.toLowerCase();
         insertPassword(password);
         arrangePattern(password);
         tail(password);
