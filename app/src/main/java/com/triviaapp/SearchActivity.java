@@ -65,7 +65,9 @@ public class SearchActivity extends AppCompatActivity {
         mView = (TextView)findViewById(R.id.show_message);
 
         if(dataFromMessageList != null){
-            search.setQuery(dataFromMessageList, false);
+            if (search != null) {
+                search.setQuery(dataFromMessageList, false);
+            }
         }
 
         if (search != null) {
@@ -174,8 +176,6 @@ public class SearchActivity extends AppCompatActivity {
                 }
             });
         }
-
-
     }
 
     private void showDialog() {
