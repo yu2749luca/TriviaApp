@@ -173,5 +173,9 @@ public class Encryption {
 
 
 
+<<<<<<< Updated upstream
 }
 
+=======
+}
+>>>>>>> Stashed changes

@@ -75,6 +75,7 @@ public class EnterMessageActivity extends AppCompatActivity {
                         snack.show();
 //                        Toast.makeText(EnterMessageActivity.this, "Message cannot be blank!", Toast.LENGTH_LONG).show();
                     }
+
                 }
             });
         }
