@@ -60,7 +60,7 @@ public class ScrollingActivity extends ListActivity {
         });
 
         requestQueue = Volley.newRequestQueue(ScrollingActivity.this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getAllMessagesURL, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getAllMessagesURL, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {

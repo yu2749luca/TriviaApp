@@ -15,7 +15,7 @@ public class Message {
 
     @Override
     public String toString(){
-        return "Alias: " + alias + "\nQuestion:" + question;
+        return "Alias: " + alias + "\nQuestion: " + question;
     }
 
     public String getAlias(){
