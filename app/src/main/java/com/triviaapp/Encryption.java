@@ -67,7 +67,7 @@ public class Encryption {
 
 
 
-    public String encrypt(String message) {
+    private String encrypt(String message) {
         //assert message.length() > 0 : "error, message not exist";
 
         String encryptM = "";
@@ -92,7 +92,7 @@ public class Encryption {
         return encryptM + tail;
     }
 
-    public String decrypt(String message) {
+    private String decrypt(String message) {
         String decryptM = "";
         int count = 0;
         char returnC = ' ';
