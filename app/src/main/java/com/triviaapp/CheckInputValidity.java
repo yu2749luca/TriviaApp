@@ -18,7 +18,7 @@ public class CheckInputValidity {
     private boolean checkEquation = true;
     private boolean checkAt = true;
     private boolean checkCompare = true;
-
+    private String altermessage;
     private boolean overall = false;
     private boolean checkPassword = false;
 
@@ -30,7 +30,8 @@ public class CheckInputValidity {
     }
 
     public boolean overallCheck(String input) {
-        checkAsicc = checkAsicc(input);
+        altermessage=alterMessage(input);
+        checkAsicc = checkAsicc(altermessage);
         checkLength = checkLength(input);
         checkDrop = checkDrop(input);
         checkEquation = checkEquation(input);
@@ -55,6 +56,9 @@ public class CheckInputValidity {
 
     public String alterMessage(String input) {
         String alterMessage = input;
+        alterMessage=alterMessage.replace("\n"," ");
+        alterMessage=alterMessage.replace("\r"," ");
+        alterMessage=alterMessage.replace("\t"," ");
 
 
         return alterMessage;
