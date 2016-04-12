@@ -1,9 +1,13 @@
 package com.triviaapp;
 
 import android.app.ListActivity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -29,6 +33,8 @@ public class ScrollingActivity extends ListActivity {
     ArrayList<Message> messageList = new ArrayList<>();
     ArrayAdapter<Message> adapter;
     String getAllMessagesURL = "http://donherwig.com/getAll.php";
+
+    JsonObjectRequest jsonObjectRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +63,10 @@ public class ScrollingActivity extends ListActivity {
             }
         });
 
+
         requestQueue = Volley.newRequestQueue(ScrollingActivity.this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getAllMessagesURL, new Response.Listener<JSONObject>() {
+
+        jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getAllMessagesURL, new Response.Listener<JSONObject>() {
 
             @Override
             public void onResponse(JSONObject response) {
@@ -77,15 +85,63 @@ public class ScrollingActivity extends ListActivity {
                 }
             }
 
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse (VolleyError error){
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse (VolleyError error){
                 Toast.makeText(ScrollingActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
 
+            }
+        });
+
+        if(isNetworkConnected())
+        {
+            requestQueue.add(jsonObjectRequest);
+        }
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Internet connection unavailable");
+            builder.setMessage("Please turn on your connection");
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                    dialog.dismiss();
                 }
             });
+            builder.show();
+        }
+    }
 
-        requestQueue.add(jsonObjectRequest);
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(isNetworkConnected())
+        {
+            requestQueue.add(jsonObjectRequest);
+        }
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Internet connection unavailable");
+            builder.setMessage("Please turn on your connection");
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
     @Override

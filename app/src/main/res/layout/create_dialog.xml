@@ -15,7 +15,7 @@
         <EditText
             android:id="@+id/alias"
             android:background="@drawable/rounded_corners"
-            android:inputType="textCapSentences|text"
+            android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
@@ -36,7 +36,7 @@
             android:id="@+id/question"
             android:hint="Trivia Question"
             android:padding="10dip"
-            android:gravity="left|top"
+            android:gravity="start|top"
             android:scrollbars = "vertical"
             android:lines="3"
             android:maxLines="3"

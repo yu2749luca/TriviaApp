@@ -6,7 +6,6 @@ package com.triviaapp;
 public class CheckInputValidity {
 
     int asiccCeiling = 126;
-    int asiccRange = 95;
     int asiccFloor = 32;
 
     int firstQ = 58;
@@ -19,19 +18,17 @@ public class CheckInputValidity {
     private boolean checkAt = true;
     private boolean checkCompare = true;
     private String altermessage;
-    private boolean overall = false;
+    boolean overall = false;
     private boolean checkPassword = false;
-    private boolean checkMessage=true;
+    boolean checkMessage=true;
     public String testString = "ALL TRUE";
 
     public CheckInputValidity() {
-
 
     }
 
     //checking message;
     public boolean checkMessage (String input){
-
         altermessage=alterMessage(input);
         checkAsicc=checkAsicc(altermessage);
         checkLength=checkLength(input);
@@ -49,7 +46,7 @@ public class CheckInputValidity {
         checkEquation = checkEquation(input);
         checkAt = checkAt(input);
         checkCompare = checkCompare(input);
-        overall = (checkAsicc) && (checkLength) && (checkLength) && (checkDrop) && (checkEquation) && (checkAt) && (checkCompare);
+        overall = (checkAsicc) && (checkLength) && (checkDrop) && (checkEquation) && (checkAt) && (checkCompare);
         if (!overall) {
             testString = "FALSE";
         }
@@ -72,13 +69,10 @@ public class CheckInputValidity {
         alterMessage=alterMessage.replace("\r"," ");
         alterMessage=alterMessage.replace("\t"," ");
 
-
         return alterMessage;
     }
 
     private boolean checkAsicc(String input) {
-
-
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
             if ((c > asiccCeiling) || (c < asiccFloor)) {
@@ -98,7 +92,6 @@ public class CheckInputValidity {
     }
 
     private boolean checkDrop(String input) {
-
         String message = input.replace(" ", "");
         message = message.toLowerCase();
         String check = ";droptable";
@@ -106,13 +99,10 @@ public class CheckInputValidity {
             checkDrop = false;
         }
 
-
         return checkDrop;
     }
 
     private boolean checkEquation(String input) {
-
-
         String message = input.replace(" ", "");
         message = message.toLowerCase();
 
@@ -122,7 +112,6 @@ public class CheckInputValidity {
             if ((cV >= firstQ) && (cV <= lastQ)) {
                 char checkPrevious = message.charAt(i - 1);
                 char checkAfter = message.charAt(i + 1);
-
                 if ((Character.isDigit(checkPrevious) && (Character.isDigit(checkAfter)))) {
                     checkEquation = false;
                     i = message.length();
@@ -141,7 +130,6 @@ public class CheckInputValidity {
         String message = input.replace(" ", "");
         message = message.toLowerCase();
         for (int i = 2; i < message.length() - 1; i++) {
-
             if (message.charAt(i) == '=') {
                 char previous2 = message.charAt(i - 2);
                 char previous = message.charAt(i - 1);
@@ -157,19 +145,14 @@ public class CheckInputValidity {
                     i = message.length();
                 }
             }
-
-
         }
-
 
         return checkCompare;
     }
 
     private boolean checkAt(String input) {
-
         String message = input.replace(" ", "");
         message = message.toLowerCase();
-        String check = "@";
 
         for (int i = 0; i < message.length() - 1; i++) {
             char c = message.charAt(i);
@@ -179,12 +162,8 @@ public class CheckInputValidity {
                     checkAt = !Character.isDigit(after);
                     i = message.length();
                 }
-
             }
-
-
         }
-
 
         return checkAt;
     }

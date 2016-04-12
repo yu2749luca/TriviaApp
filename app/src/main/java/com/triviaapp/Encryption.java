@@ -28,7 +28,6 @@ public class Encryption {
     }
 
     public String encode (String message){
-
         String [] seperate=message.split("\n");
         String result="";
         for (int i=0;i<seperate.length;i++){
@@ -38,14 +37,10 @@ public class Encryption {
             result=result+"\n"+encrypt;}
         }
 
-
-
         return result;
-
     }
 
     public String decode (String message){
-
         String [] seperate=message.split("\n");
         String result="";
         for (int i=0;i<seperate.length;i++){
@@ -53,23 +48,15 @@ public class Encryption {
             if(!read.isEmpty()){
             String decrypt=decrypt(read);
             result=result+"\n"+decrypt;}
-
-
         }
 
-
-
         return result;
-
-
-
     }
 
 
 
     private String encrypt(String message) {
         //assert message.length() > 0 : "error, message not exist";
-
         String encryptM = "";
         int count = 0;
         char changedC = ' ';
@@ -85,9 +72,7 @@ public class Encryption {
             encryptM = encryptM + changedC;
             message = message.substring(1);
             count++;
-
         }
-
         //System.out.println();
         return encryptM + tail;
     }
@@ -109,14 +94,12 @@ public class Encryption {
             decryptM = decryptM + returnC;
             message = message.substring(1);
             count++;
-
         }
         //System.out.println();
         return decryptM;
     }
 
     private void tail(String password) {
-
         for (int i = 0; i < special4; i++) {
             double drandom = Math.random() * 30;
             int intRan = (int) drandom;
@@ -131,11 +114,11 @@ public class Encryption {
         passLength = password.length();
         int passwordValue = passwordValue(password);
 
+        String allCap = password.toUpperCase();
+
         special1 = password.length() + passwordValue;
         special2 = passwordValue;
-        String allCap = password.toUpperCase();
-        int allCapValue = passwordValue(allCap);
-        special3 = allCapValue;
+        special3 = passwordValue(allCap);
         special4 = special1 % passLength + 1;
 
         this.blocks = new int[]{special1, special3, andyAge, special2, passLength, special4};
@@ -177,9 +160,8 @@ public class Encryption {
         while (asiccCode > asiccCeiling) {
             asiccCode = asiccCode - asiccRange;
         }
-        char changeC = (char) asiccCode;
         //System.out.print(" "+asiccCode+" ");
-        return changeC;
+        return (char) asiccCode;
     }
 
     private char returnC(char messageC, int shifted) {
@@ -189,8 +171,7 @@ public class Encryption {
             asiccCode = asiccCode + asiccRange;
         }
 
-        char returnC = (char) asiccCode;
         //System.out.print(" "+asiccCode+" ");
-        return returnC;
+        return (char) asiccCode;
     }
 }

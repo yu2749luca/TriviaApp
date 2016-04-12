@@ -55,7 +55,7 @@
             android:maxLines="5"
             android:padding="10dp"
             android:textCursorDrawable="@null"
-            android:maxLength="150"
+            android:maxLength="200"
             android:layout_marginTop="8dp"/>
 
         <Button

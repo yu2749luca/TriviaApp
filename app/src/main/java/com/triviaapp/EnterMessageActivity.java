@@ -2,8 +2,10 @@ package com.triviaapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -51,8 +53,8 @@ public class EnterMessageActivity extends AppCompatActivity {
     private EditText answerInput;
 
     String a = "<b>Alias</b> - Enter an alias less than 20 characters. This will be used to search and identify your message.<br/><br/>";
-    String b = "<b>Trivia Question</b> - Enter a trivia question less 150 characters.<br/><br/>";
-    String c = "<b>Trivia Answer</b> - Enter the answer for the trivia question. Answers are automatically lowercase.";
+    String b = "<b>Trivia Question</b> - Enter a trivia question less than 150 characters.<br/><br/>";
+    String c = "<b>Trivia Answer</b> - Enter the answer for the trivia question. Answer must be less than 50 characters.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,6 @@ public class EnterMessageActivity extends AppCompatActivity {
                     boolean checkMessage=checkM.checkMessage(message);
                     if(message.isEmpty()||!checkMessage)
                     {
-
                         if (m != null) {
                             m.setError(error1);
                         }
@@ -96,41 +97,65 @@ public class EnterMessageActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        final Encryption userMessage = new Encryption(answer);
-                        StringRequest request = new StringRequest(Request.Method.POST, insertURL, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                //listen for response from server and let user know if alias is already used
-                                if (!response.isEmpty()) {
-                                    Toast.makeText(EnterMessageActivity.this, response, Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(EnterMessageActivity.this, "Message Sent!", Toast.LENGTH_SHORT).show();
+                        if(isNetworkConnected())
+                        {
+                            final Encryption userMessage = new Encryption(answer);
+                            StringRequest request = new StringRequest(Request.Method.POST, insertURL, new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    //listen for response from server and let user know if alias is already used
+                                    if (!response.isEmpty()) {
+                                        Toast.makeText(EnterMessageActivity.this, response, Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(EnterMessageActivity.this, "Message Sent!", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
                                 }
-                            }
-                        }, new Response.ErrorListener() {
-                            //this returns error if there is runtime error on server
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(EnterMessageActivity.this, "server error", Toast.LENGTH_SHORT).show();
-                            }
-                        }) {
-                            //These are the values sent to the server
-                            @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
-                                Map<String, String> parameters = new HashMap<>();
-                                parameters.put("alias", alias);
-                                parameters.put("message", userMessage.encode(message));
-                                parameters.put("question", question);
+                            }, new Response.ErrorListener() {
+                                //this returns error if there is runtime error on server
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(EnterMessageActivity.this, "server error", Toast.LENGTH_SHORT).show();
+                                }
+                            }) {
+                                //These are the values sent to the server
+                                @Override
+                                protected Map<String, String> getParams() throws AuthFailureError {
+                                    Map<String, String> parameters = new HashMap<>();
+                                    parameters.put("alias", alias);
+                                    parameters.put("message", userMessage.encode(message));
+                                    parameters.put("question", question);
 
-                                return parameters;
-                            }
-                        };
-                        requestQueue.add(request);
+                                    return parameters;
+                                }
+                            };
+                            requestQueue.add(request);
+                        }
+                        else
+                        {
+                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(EnterMessageActivity.this);
+                            builder.setTitle("Internet connection unavailable");
+                            builder.setMessage("Please turn on your connection");
+
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.show();
+                        }
                     }
 
                 }
             });
         }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 
     @Override
@@ -150,11 +175,9 @@ public class EnterMessageActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView).setTitle("Please enter the following").setMessage(Html.fromHtml(a + b + c));
 
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
+            public void onClick(DialogInterface dialog, int id) {}
         }).setPositiveButton("Next", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
+            public void onClick(DialogInterface dialog, int id) {}
         }).setOnKeyListener(new Dialog.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event) {
@@ -184,13 +207,13 @@ public class EnterMessageActivity extends AppCompatActivity {
 
                         alias = aliasInput.getText().toString();
                         question = questionInput.getText().toString();
-                        answer = answerInput.getText().toString();
-                        CheckInputValidity checkA=new CheckInputValidity();
-                        boolean checkAlias=checkA.overallCheck(alias);
-                        CheckInputValidity checkQ=new CheckInputValidity();
-                        boolean checkQuestion=checkQ.overallCheck(question);
-                        CheckInputValidity checkR=new CheckInputValidity();
-                        boolean checkAnswer=checkR.checkPassword(answer);
+                        answer = answerInput.getText().toString().toLowerCase();
+
+                        CheckInputValidity check=new CheckInputValidity();
+                        boolean checkAlias=check.overallCheck(alias);
+                        boolean checkQuestion=check.overallCheck(question);
+                        boolean checkAnswer=check.checkPassword(answer);
+
                         if (!checkAlias || !checkQuestion || !checkAnswer) {
                             if (!checkAlias) {
                                 aliasInput.setError(error2);
@@ -207,6 +230,7 @@ public class EnterMessageActivity extends AppCompatActivity {
                         }
                     }
                 });
+
                 Button n = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
                 n.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -2,8 +2,10 @@ package com.triviaapp;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -37,7 +39,6 @@ public class SearchActivity extends AppCompatActivity {
 
     String getMessage = "http://donherwig.com/readMessage.php";
     String encryptedMessage = "";
-    String actualMessage;
     RequestQueue requestQueue;
 
     TextView qView;
@@ -74,78 +75,97 @@ public class SearchActivity extends AppCompatActivity {
             search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(final String query) {
-                    final ProgressDialog dialog = new ProgressDialog(SearchActivity.this);
-                    dialog.setTitle("Please Wait");
-                    dialog.setMessage("Searching for your message");
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
 
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
+                    if(isNetworkConnected())
+                    {
+                        final ProgressDialog dialog = new ProgressDialog(SearchActivity.this);
+                        dialog.setTitle("Please Wait");
+                        dialog.setMessage("Searching for your message");
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.show();
 
-                        @Override
-                        public void run() {
-                            dialog.dismiss();
-                            if (query.isEmpty()) {
-                                Snackbar snack = Snackbar.make(findViewById(R.id.searchView), "Search cannot be blank!", Snackbar.LENGTH_SHORT)
-                                        .setActionTextColor(Color.WHITE);
-                                View snackView = snack.getView();
-                                snackView.setBackgroundColor(Color.parseColor("#00CCFF"));
-                                TextView text = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
-                                text.setTextColor(Color.WHITE);
-                                text.setGravity(Gravity.CENTER_HORIZONTAL);
-                                snack.show();
-                            } else {
-                                StringRequest request = new StringRequest(Request.Method.POST, getMessage, new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        //server will return "Alias doesn't exist if the alias isn't in database
-                                        if (!response.equals("Alias doesn't exist!")) {
-                                            JSONObject answer;
-                                            //create a JsonObject from returned JSON string from server
-                                            try {
-                                                answer = new JSONObject(response);
-                                                JSONArray temp = answer.getJSONArray("serverData");
-                                                JSONObject tempMessage = temp.getJSONObject(0);
-                                                encryptedMessage = tempMessage.getString("message");
-                                                JSONObject question = temp.getJSONObject(0);
-                                                String questionString = question.getString("question");
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
 
-                                                if (qView != null) {
-                                                    qView.setText(questionString);
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                                if (query.isEmpty()) {
+                                    Snackbar snack = Snackbar.make(findViewById(R.id.searchView), "Search cannot be blank!", Snackbar.LENGTH_SHORT)
+                                            .setActionTextColor(Color.WHITE);
+                                    View snackView = snack.getView();
+                                    snackView.setBackgroundColor(Color.parseColor("#00CCFF"));
+                                    TextView text = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
+                                    text.setTextColor(Color.WHITE);
+                                    text.setGravity(Gravity.CENTER_HORIZONTAL);
+                                    snack.show();
+                                } else {
+                                    StringRequest request = new StringRequest(Request.Method.POST, getMessage, new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            //server will return "Alias doesn't exist if the alias isn't in database
+                                            if (!response.equals("Alias doesn't exist!")) {
+                                                JSONObject answer;
+                                                //create a JsonObject from returned JSON string from server
+                                                try {
+                                                    answer = new JSONObject(response);
+                                                    JSONArray temp = answer.getJSONArray("serverData");
+                                                    JSONObject tempMessage = temp.getJSONObject(0);
+                                                    encryptedMessage = tempMessage.getString("message");
+                                                    JSONObject question = temp.getJSONObject(0);
+                                                    String questionString = question.getString("question");
+
+                                                    if (qView != null) {
+                                                        qView.setText(questionString);
+                                                    }
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
                                                 }
 
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
+                                            } else {
+                                                final AlertDialog d = new AlertDialog.Builder(SearchActivity.this)
+                                                        .setTitle("Invalid Alias")
+                                                        .setMessage("Alias does not exist")
+                                                        .setPositiveButton("OK", null)
+                                                        .create();
+                                                d.show();
                                             }
-
-                                        } else {
-                                            final AlertDialog d = new AlertDialog.Builder(SearchActivity.this)
-                                                    .setTitle("Invalid Alias")
-                                                    .setMessage("Alias does not exist")
-                                                    .setPositiveButton("OK", null)
-                                                    .create();
-                                            d.show();
                                         }
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }) {
-                                    //alias gets sent to server for database query
-                                    @Override
-                                    protected Map<String, String> getParams() throws AuthFailureError {
-                                        Map<String, String> parameters = new HashMap<>();
-                                        parameters.put("alias", query);
-                                        return parameters;
-                                    }
-                                };
-                                requestQueue.add(request);
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }) {
+                                        //alias gets sent to server for database query
+                                        @Override
+                                        protected Map<String, String> getParams() throws AuthFailureError {
+                                            Map<String, String> parameters = new HashMap<>();
+                                            parameters.put("alias", query);
+                                            return parameters;
+                                        }
+                                    };
+                                    requestQueue.add(request);
+                                }
                             }
-                        }
-                    }, 1000);
+                        }, 1000);
+                        return false;
+                    }
+                    else {
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(SearchActivity.this);
+                        builder.setTitle("Internet connection unavailable");
+                        builder.setMessage("Please turn on your connection");
+
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.show();
+                    }
                     return false;
                 }
 
@@ -178,6 +198,12 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
+
     private void showDialog() {
         final EditText input = new EditText(SearchActivity.this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -188,7 +214,7 @@ public class SearchActivity extends AppCompatActivity {
         final AlertDialog d = new AlertDialog.Builder(SearchActivity.this)
                 .setView(input)
                 .setTitle("Trivia Answer")
-                .setPositiveButton("OK", null) //Set to null. We override the onclick
+                .setPositiveButton("OK", null)
                 .setNegativeButton("Cancel", null)
                 .create();
 
@@ -200,7 +226,7 @@ public class SearchActivity extends AppCompatActivity {
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        final String ans = input.getText().toString();
+                        final String ans = input.getText().toString().toLowerCase();
                         if (!ans.isEmpty()) {
                             dialog.dismiss();
                             final ProgressDialog progress = new ProgressDialog(SearchActivity.this);
@@ -217,14 +243,6 @@ public class SearchActivity extends AppCompatActivity {
                                     progress.dismiss();
                                     View search = findViewById(R.id.searchView);
                                     if (search != null) {
-//                                        Snackbar snack = Snackbar.make(search, "Successfully decrypted!", Snackbar.LENGTH_SHORT)
-//                                                .setActionTextColor(Color.WHITE);
-//                                        View snackView = snack.getView();
-//                                        snackView.setBackgroundColor(Color.parseColor("#00CCFF"));
-//                                        TextView text = (TextView) snackView.findViewById(android.support.design.R.id.snackbar_text);
-//                                        text.setTextColor(Color.WHITE);
-//                                        text.setGravity(Gravity.CENTER_HORIZONTAL);
-//                                        snack.show();
                                         if (ans.length() > 1 && !encryptedMessage.isEmpty()) {
                                             Encryption mes = new Encryption(ans);
                                             mView.setText(mes.decode(encryptedMessage));
