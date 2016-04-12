@@ -78,7 +78,7 @@ public class EnterMessageActivity extends AppCompatActivity {
                     EditText m = (EditText) findViewById(R.id.message);
                     message = m != null ? m.getText().toString() : "";
                     CheckInputValidity checkM=new CheckInputValidity();
-                    boolean checkMessage=checkM.checkAsicc(message);
+                    boolean checkMessage=checkM.checkMessage(message);
                     if(message.isEmpty()||!checkMessage)
                     {
 
@@ -119,7 +119,7 @@ public class EnterMessageActivity extends AppCompatActivity {
                             protected Map<String, String> getParams() throws AuthFailureError {
                                 Map<String, String> parameters = new HashMap<>();
                                 parameters.put("alias", alias);
-                                parameters.put("message", userMessage.encrypt(message));
+                                parameters.put("message", userMessage.encode(message));
                                 parameters.put("question", question);
 
                                 return parameters;

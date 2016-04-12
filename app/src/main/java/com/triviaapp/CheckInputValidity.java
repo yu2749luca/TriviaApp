@@ -21,13 +21,25 @@ public class CheckInputValidity {
     private String altermessage;
     private boolean overall = false;
     private boolean checkPassword = false;
-
+    private boolean checkMessage=true;
     public String testString = "ALL TRUE";
 
     public CheckInputValidity() {
 
 
     }
+
+    //checking message;
+    public boolean checkMessage (String input){
+
+        altermessage=alterMessage(input);
+        checkAsicc=checkAsicc(altermessage);
+        checkLength=checkLength(input);
+        checkMessage=checkAsicc&&checkLength;
+
+        return checkMessage;
+    }
+
 
     public boolean overallCheck(String input) {
         altermessage=alterMessage(input);
@@ -64,7 +76,7 @@ public class CheckInputValidity {
         return alterMessage;
     }
 
-    public boolean checkAsicc(String input) {
+    private boolean checkAsicc(String input) {
 
 
         for (int i = 0; i < input.length(); i++) {

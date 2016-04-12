@@ -227,7 +227,7 @@ public class SearchActivity extends AppCompatActivity {
 //                                        snack.show();
                                         if (ans.length() > 1 && !encryptedMessage.isEmpty()) {
                                             Encryption mes = new Encryption(ans);
-                                            mView.setText(mes.decrypt(encryptedMessage));
+                                            mView.setText(mes.decode(encryptedMessage));
                                         } else {
                                             Toast.makeText(SearchActivity.this, "Answer must be at least 2 characters!", Toast.LENGTH_LONG).show();
                                         }
