@@ -92,26 +92,6 @@ public class ScrollingActivity extends ListActivity {
 
             }
         });
-
-        if(isNetworkConnected())
-        {
-            requestQueue.add(jsonObjectRequest);
-        }
-        else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Internet connection unavailable");
-            builder.setMessage("Please turn on your connection");
-
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                    dialog.dismiss();
-                }
-            });
-            builder.show();
-        }
     }
 
     @Override
@@ -119,6 +99,7 @@ public class ScrollingActivity extends ListActivity {
         super.onResume();
         if(isNetworkConnected())
         {
+            messageList.clear();
             requestQueue.add(jsonObjectRequest);
         }
         else {
