@@ -27,13 +27,21 @@ public class Encryption {
 
     String tail = "";
 
+
+    /*
+    make sure the method is called only when the password (answer for trivia question) is inputted.
+     */
     public Encryption(String password) {
         password=password.toLowerCase();
         insertPassword(password);
         arrangePattern(password);
         tail(password);
     }
-
+    /*
+    this method will break the message into arrays of strings without "nextLine";
+    then it will call the encrypt method and encrypt each line of string;
+    last, it will form the all the encrypted messages back to what it supposed to look like
+     */
     public String encode (String message){
         String [] seperate=message.split("\n");
         String result="";
@@ -46,6 +54,12 @@ public class Encryption {
 
         return result;
     }
+
+      /*
+    this method will break the message into arrays of strings without "nextLine";
+    then it will call the decrypt method and decrypt each line of string;
+    last, it will form the all the decrypted messages back to what it supposed to look like
+     */
 
     public String decode (String message){
         String [] seperate=message.split("\n");
@@ -106,6 +120,10 @@ public class Encryption {
         return decryptM;
     }
 
+
+    /*
+    add random amount of characters at the end the encrypted message to prevent reverse engineering
+     */
     private void tail(String password) {
         for (int i = 0; i < special4; i++) {
             double drandom = Math.random() * 30;
@@ -132,6 +150,10 @@ public class Encryption {
         //this.blocks=new int [] {1,2,3,4,5,6};
     }
 
+
+    /*
+    this generates a pattern of how the blocks are being used
+     */
     private void arrangePattern(String password) {
         int size = 2;
         if (password.length() > size) {
@@ -148,7 +170,9 @@ public class Encryption {
         //pattern=new int [] {1,2,4,5,3};
         //System.out.println("pattern :"+pattern [2]);
     }
-
+    /*
+    sum of the value of password's asicc code
+     */
     private int passwordValue(String password) {
         int value = 0;
         while (!password.isEmpty()) {
@@ -159,7 +183,9 @@ public class Encryption {
         return value;
     }
 
-
+    /*
+    change the character based on the value (encrypt)
+     */
     private char changeC(char messageC, int shifted) {
 
         int asiccCode = (int) messageC + shifted;
@@ -170,6 +196,10 @@ public class Encryption {
         //System.out.print(" "+asiccCode+" ");
         return (char) asiccCode;
     }
+
+        /*
+    change the character based on the value (decrypt)
+     */
 
     private char returnC(char messageC, int shifted) {
         int asiccCode = (int) messageC - shifted;

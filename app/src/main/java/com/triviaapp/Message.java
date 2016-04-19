@@ -2,7 +2,7 @@ package com.triviaapp;
 
 /**
  *
- * this is for the list view on the home page. 
+ * this is for the list view on the home page.
  *
  * Created by Andy on 4/12/2016.
  */
