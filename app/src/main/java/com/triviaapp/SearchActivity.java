@@ -43,22 +43,28 @@ this page connects to the server;
  */
 public class SearchActivity extends AppCompatActivity {
 
+    // URL to server
     String getMessage = "http://donherwig.com/readMessage.php";
+    // Variable to hold encrypted message
     String encryptedMessage = "";
+    // Mechanism for get requests
     RequestQueue requestQueue;
 
+    // References to text views on layout
     TextView qView;
     TextView mView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Set up layout and tool bar
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
 
         setSupportActionBar(toolbar);
         SearchView search = (SearchView) findViewById(R.id.searchView);
 
+        // Retrieve alias passed if any is given
         String dataFromMessageList = getIntent().getStringExtra("alias");
 
         if (toolbar != null) {
@@ -66,37 +72,46 @@ public class SearchActivity extends AppCompatActivity {
             toolbar.setTitleTextColor(Color.WHITE);
         }
 
+        // Set up mechanism for get requests
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
+        // Set references to text views
         qView = (TextView)findViewById(R.id.search_question);
         mView = (TextView)findViewById(R.id.show_message);
 
+        // If alias was passed in, use it in search query to automatically set up for user
         if(dataFromMessageList != null){
             if (search != null) {
                 search.setQuery(dataFromMessageList, false);
             }
         }
 
+        // No alias is passed. Therefore, fresh activity instance
         if (search != null) {
+            // On Query listener for actions on searching
             search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(final String query) {
-
+                    // Check network connection is available
                     if(isNetworkConnected())
                     {
+                        // Set up searching dialog
                         final ProgressDialog dialog = new ProgressDialog(SearchActivity.this);
                         dialog.setTitle("Please Wait");
                         dialog.setMessage("Searching for your message");
                         dialog.setCanceledOnTouchOutside(false);
                         dialog.show();
 
+                        // Create handler to check if query was successful
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
-
                             @Override
                             public void run() {
+                                // Once one second has passed, dismiss loading dialog
                                 dialog.dismiss();
+                                // Check if query is empty
                                 if (query.isEmpty()) {
+                                    // Set up snackbar to tell user the query cannot be empty
                                     Snackbar snack = Snackbar.make(findViewById(R.id.searchView), "Search cannot be blank!", Snackbar.LENGTH_SHORT)
                                             .setActionTextColor(Color.WHITE);
                                     View snackView = snack.getView();
@@ -106,6 +121,7 @@ public class SearchActivity extends AppCompatActivity {
                                     text.setGravity(Gravity.CENTER_HORIZONTAL);
                                     snack.show();
                                 } else {
+                                    // Create get request to find the message associated with given alias
                                     StringRequest request = new StringRequest(Request.Method.POST, getMessage, new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
@@ -130,6 +146,7 @@ public class SearchActivity extends AppCompatActivity {
                                                 }
 
                                             } else {
+                                                // Show alert dialog to tell user search was invalid
                                                 final AlertDialog d = new AlertDialog.Builder(SearchActivity.this)
                                                         .setTitle("Invalid Alias")
                                                         .setMessage("Alias does not exist")
@@ -141,10 +158,11 @@ public class SearchActivity extends AppCompatActivity {
                                     }, new Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
+                                            // Toast for error
                                             Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                                         }
                                     }) {
-                                        //alias gets sent to server for database query
+                                        // Alias gets sent to server for database query
                                         @Override
                                         protected Map<String, String> getParams() throws AuthFailureError {
                                             Map<String, String> parameters = new HashMap<>();
@@ -159,6 +177,7 @@ public class SearchActivity extends AppCompatActivity {
                         return false;
                     }
                     else {
+                        // Show alert dialog to prompt user to establish internet connection
                         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(SearchActivity.this);
                         builder.setTitle("Internet connection unavailable");
                         builder.setMessage("Please turn on your connection");
@@ -187,7 +206,9 @@ public class SearchActivity extends AppCompatActivity {
             answer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Check if there's an encrypted message to even decrypt
                     if (encryptedMessage.isEmpty()) {
+                        // Show snackbar to tell user there isn't anything to decrypt yet
                         Snackbar snack = Snackbar.make(findViewById(R.id.searchView), "Nothing to decrypt!", Snackbar.LENGTH_SHORT)
                                 .setActionTextColor(Color.WHITE);
                         View snackView = snack.getView();
@@ -204,12 +225,13 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    // Check internet connection is available
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
         return cm.getActiveNetworkInfo() != null;
     }
 
+    // Method to show alert dialog to answer trivia question
     private void showDialog() {
         final EditText input = new EditText(SearchActivity.this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -217,6 +239,7 @@ public class SearchActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT);
         input.setLayoutParams(lp);
 
+        // Build alert dialog
         final AlertDialog d = new AlertDialog.Builder(SearchActivity.this)
                 .setView(input)
                 .setTitle("Trivia Answer")
@@ -232,8 +255,10 @@ public class SearchActivity extends AppCompatActivity {
                 b.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        // Check if answer is given or not
                         final String ans = input.getText().toString().toLowerCase();
                         if (!ans.isEmpty()) {
+                            // If answer is given, then show loading message
                             dialog.dismiss();
                             final ProgressDialog progress = new ProgressDialog(SearchActivity.this);
                             progress.setTitle("Please Wait");
@@ -241,6 +266,7 @@ public class SearchActivity extends AppCompatActivity {
                             progress.setCanceledOnTouchOutside(false);
                             progress.show();
 
+                            // Create handler to launch action after one second
                             final Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
 
@@ -249,10 +275,13 @@ public class SearchActivity extends AppCompatActivity {
                                     progress.dismiss();
                                     View search = findViewById(R.id.searchView);
                                     if (search != null) {
+                                        // Check if answer's length is greater than 1 and encrypted message isn't empty
                                         if (ans.length() > 1 && !encryptedMessage.isEmpty()) {
+                                            // Attempt to decrypt message with user's given answer
                                             Encryption mes = new Encryption(ans);
                                             mView.setText(mes.decode(encryptedMessage));
                                         } else {
+                                            // Show toast to prompt user input is invalid
                                             Toast.makeText(SearchActivity.this, "Answer must be at least 2 characters!", Toast.LENGTH_LONG).show();
                                         }
                                     }
@@ -263,7 +292,6 @@ public class SearchActivity extends AppCompatActivity {
                         }
                     }
                 });
-
                 Button n = d.getButton(AlertDialog.BUTTON_NEGATIVE);
                 n.setOnClickListener(new View.OnClickListener() {
                     @Override
