@@ -11,8 +11,8 @@ public class CheckInputValidity {
     int asiccCeiling = 126;
     int asiccFloor = 32;
 
-    int firstQ = 58;
-    int lastQ = 62;
+    int firstQ = 58; //asicc code of ":"
+    int lastQ = 62; // asicc code of ">"
 
     private boolean checkAsicc = true;
     private boolean checkLength = true;
@@ -42,9 +42,7 @@ public class CheckInputValidity {
 
 
     /*this is mean to check all the return methods are TRUE
-
     the input message is passed along to multiple methods to check if the input message is valid or not
-
 
     @param input string that needs to be checked
     @return return true if all the checks are true
@@ -67,6 +65,9 @@ public class CheckInputValidity {
     /*this is meant to check if the input passwords have the met the requirement of Length>2 and use only assic code
 
 
+    @param input a message
+    @return true if the message.length>2
+
      */
     public boolean checkPassword(String input) {
         checkAsicc = checkAsicc(input);
@@ -82,6 +83,10 @@ public class CheckInputValidity {
     /*
     this is a very crucial method. This method is meant to take out "nextLine" in a message; because asiccCode do not read these.
     this method is called first before it is checked if all the characters are in the asicc code
+
+
+    @param input a message
+    @return return the message without "nextlines"
      */
     public String alterMessage(String input) {
         String alterMessage = input;
@@ -95,6 +100,9 @@ public class CheckInputValidity {
 
     /*
     check if all the characters within the messages are within asicc code value that we want
+
+    @param input a message
+    @return true all the characters from the message are within the range of asicc value we want
      */
     private boolean checkAsicc(String input) {
         for (int i = 0; i < input.length(); i++) {
@@ -108,7 +116,10 @@ public class CheckInputValidity {
     }
 
     /*
-    make sure the length the mssage >2
+    make sure the length the message >2
+
+    @param input a message
+    @return true if length of the message >2
      */
     private boolean checkLength(String input) {
         if (input.length() < 2) {
@@ -121,10 +132,14 @@ public class CheckInputValidity {
     /*
 
     make sure the message contain no SQL injection of ";droptable"
+
+
+    @param input a message
+    @return true the message contains no ;droptable
      */
     private boolean checkDrop(String input) {
-        String message = input.replace(" ", "");
-        message = message.toLowerCase();
+        String message = input.replace(" ", ""); //eliminate space
+        message = message.toLowerCase(); //to all lower case so case does not matter
         String check = ";droptable";
         if (message.contains(check)) {
             checkDrop = false;
@@ -137,6 +152,9 @@ public class CheckInputValidity {
 
   make sure the message contain no SQL injection of "1=1" or "1=5";
   so the users cannot try to input an equation
+
+    @param input a message
+    @return true the message contains no true/false equal/greater/lesser sign equation
    */
     private boolean checkEquation(String input) {
         String message = input.replace(" ", "");
@@ -162,8 +180,11 @@ public class CheckInputValidity {
     }
     /*
 
-   make sure the message contain no SQL injection of "4>1" or other kinds;
+   make sure the message contain no SQL injection of "4>=1" or other kinds;
    so the users cannot try to input an equation
+
+    @param input a message
+    @return true the message contains no true/false greater/lesser equal equation
     */
     private boolean checkCompare(String input) {
         boolean checkSigns = false;
@@ -192,7 +213,8 @@ public class CheckInputValidity {
     /*
 
    make sure the message contain no SQL injection of "@ digit";
-
+    @param input a message
+    @return true the message contains no @digit 
     */
     private boolean checkAt(String input) {
         String message = input.replace(" ", "");
