@@ -41,7 +41,14 @@ public class CheckInputValidity {
     }
 
 
-    //this is mean to check all the return methods are TRUE
+    /*this is mean to check all the return methods are TRUE
+
+    the input message is passed along to multiple methods to check if the input message is valid or not
+
+
+    @param input string that needs to be checked
+    @return return true if all the checks are true
+     */
     public boolean overallCheck(String input) {
         altermessage=alterMessage(input);
         checkAsicc = checkAsicc(altermessage);
