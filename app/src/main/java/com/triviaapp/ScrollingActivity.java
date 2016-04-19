@@ -27,6 +27,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+
+/*
+
+this is the main page; it calls for server and requests for all the trivia questions that have been entered
+
+ */
 public class ScrollingActivity extends ListActivity {
 
     RequestQueue requestQueue;

@@ -35,6 +35,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
+/*
+this page is for searching trivia question by using Alias (ID)
+this page connects to the server;
+ */
 public class SearchActivity extends AppCompatActivity {
 
     String getMessage = "http://donherwig.com/readMessage.php";

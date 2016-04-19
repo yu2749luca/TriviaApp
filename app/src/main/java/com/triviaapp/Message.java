@@ -1,6 +1,9 @@
 package com.triviaapp;
 
 /**
+ *
+ *
+ *
  * Created by Andy on 4/12/2016.
  */
 public class Message {

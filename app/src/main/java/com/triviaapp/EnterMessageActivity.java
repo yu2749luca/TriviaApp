@@ -1,5 +1,12 @@
 package com.triviaapp;
 
+/*
+* This is the
+*
+*
+* */
+
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -30,6 +37,12 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.HashMap;
 import java.util.Map;
+
+
+/* this class is for users entering alias (ID), question, answer (password); then last, message
+* All the SQL Injection and encryption classes are called here.
+*
+* */
 
 public class EnterMessageActivity extends AppCompatActivity {
 

@@ -1,6 +1,9 @@
 package com.triviaapp;
 
 /**
+ * This is meant to check SQL injection in the interface; (We already have internet codes to check SQL injection in the back);
+ * This section is primary meant to strengthen our UI.
+ *
  * Created by yu2749luca on 4/11/16.
  */
 public class CheckInputValidity {
@@ -27,7 +30,7 @@ public class CheckInputValidity {
 
     }
 
-    //checking message;
+    //we need to make sure input messages are within the assicCode that we accept
     public boolean checkMessage (String input){
         altermessage=alterMessage(input);
         checkAsicc=checkAsicc(altermessage);
@@ -38,6 +41,7 @@ public class CheckInputValidity {
     }
 
 
+    //this is mean to check all the return methods are TRUE
     public boolean overallCheck(String input) {
         altermessage=alterMessage(input);
         checkAsicc = checkAsicc(altermessage);
@@ -53,6 +57,10 @@ public class CheckInputValidity {
         return overall;
     }
 
+    /*this is meant to check if the input passwords have the met the requirement of Length>2 and use only assic code
+
+
+     */
     public boolean checkPassword(String input) {
         checkAsicc = checkAsicc(input);
         checkLength = checkLength(input);
@@ -63,6 +71,11 @@ public class CheckInputValidity {
         return checkPassword;
     }
 
+
+    /*
+    this is a very crucial method. This method is meant to take out "nextLine" in a message; because asiccCode do not read these.
+    this method is called first before it is checked if all the characters are in the asicc code
+     */
     public String alterMessage(String input) {
         String alterMessage = input;
         alterMessage=alterMessage.replace("\n"," ");
@@ -72,6 +85,10 @@ public class CheckInputValidity {
         return alterMessage;
     }
 
+
+    /*
+    check if all the characters within the messages are within asicc code value that we want
+     */
     private boolean checkAsicc(String input) {
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
@@ -83,6 +100,9 @@ public class CheckInputValidity {
 
     }
 
+    /*
+    make sure the length the mssage >2
+     */
     private boolean checkLength(String input) {
         if (input.length() < 2) {
             checkLength = false;
@@ -91,6 +111,10 @@ public class CheckInputValidity {
         return checkLength;
     }
 
+    /*
+
+    make sure the message contain no SQL injection of ";droptable"
+     */
     private boolean checkDrop(String input) {
         String message = input.replace(" ", "");
         message = message.toLowerCase();
@@ -102,6 +126,11 @@ public class CheckInputValidity {
         return checkDrop;
     }
 
+    /*
+
+  make sure the message contain no SQL injection of "1=1" or "1=5";
+  so the users cannot try to input an equation
+   */
     private boolean checkEquation(String input) {
         String message = input.replace(" ", "");
         message = message.toLowerCase();
@@ -124,7 +153,11 @@ public class CheckInputValidity {
 
         return checkEquation;
     }
+    /*
 
+   make sure the message contain no SQL injection of "4>1" or other kinds;
+   so the users cannot try to input an equation
+    */
     private boolean checkCompare(String input) {
         boolean checkSigns = false;
         String message = input.replace(" ", "");
@@ -149,7 +182,11 @@ public class CheckInputValidity {
 
         return checkCompare;
     }
+    /*
 
+   make sure the message contain no SQL injection of "@ digit";
+
+    */
     private boolean checkAt(String input) {
         String message = input.replace(" ", "");
         message = message.toLowerCase();

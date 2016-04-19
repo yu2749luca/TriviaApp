@@ -1,6 +1,10 @@
 package com.triviaapp;
 
 /**
+ *
+ * this file is meant to encrypt the message that users input
+ * this encryption method is self-written.
+ *
  * Created by yu2749luca on 4/11/16.
  */
 
@@ -9,8 +13,10 @@ public class Encryption {
     int asiccCeiling = 126;
     int asiccRange = 95;
     int asiccFloor = 32;
-    int[] pattern;
+    int[] pattern; //pattern of the blocks that are being used.
 
+
+    //values for the blocks that are shifting
     int passLength;
     int special1;
     int special2;
