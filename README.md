@@ -6,3 +6,5 @@ This app is able to encrypt messages and decrypted messages without storing "pas
 
 Language & Tool: Java, Json, SQL, Raspberry Pi.
 Main Contributor is Andy Kim. 
+
+I personally wrote the encryption & decripytion methods. 
